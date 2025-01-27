@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload an Image</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="image" accept=".jpg, .jpeg">
+        <button type="button" onclick="uploadImage()">Upload</button>
+    </form>
+    <div id="response"></div>
+
+    <script>
+        async function uploadImage() {
+            const form = document.getElementById('uploadForm');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/upload/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('response').innerText = JSON.stringify(result, null, 2);
+                } else {
+                    const error = await response.json();
+                    document.getElementById('response').innerText = `Error: ${JSON.stringify(error, null, 2)}`;
+                }
+            } catch (error) {
+                document.getElementById('response').innerText = `Network Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
